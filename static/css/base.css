@@ -1,0 +1,17 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family:sans-serif, Arial, Verdana, "Microsoft Yahei"!important;
+    margin-top: 2em!important;
+    /*表示这个条很重要Trebuchet MS*/
+}
+footer.my-footer{
+    position: fixed!important;
+    bottom: 0!important;
+    width: 100%;
+}
+ul{
+    list-style-type: none;
+}

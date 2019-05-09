@@ -1,0 +1,35 @@
+ul.blog-type{
+    list-style-type:none;
+}
+div.blog.h3{
+    margin-top: 0.5em;
+}
+div.blog{
+    border-bottom: 1px solid #a49494;
+    margin-bottom: 2em;
+    padding-bottom: 0.8em;
+}
+div.blog p.blog-info{
+    margin-bottom: 0;
+}
+div.blog-content{
+    text-indent: 2em;
+}
+div.content{
+    margin-top: 90px;
+}
+div.comment-area{
+    margin-top: 2em;
+
+}
+h3.comment-title{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.4em;
+}
+div.comment_line{
+    border-bottom: 1px solid #ccc;
+    padding-left: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-bottom: 1em;
+}
