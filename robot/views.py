@@ -13,11 +13,9 @@ from django.core.cache import cache
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import render,get_object_or_404,redirect
-from django.contrib import auth
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.urls import reverse
-from talkrobot.forms import loginForm,RegForm
+from user.forms import loginForm
 from comment.forms import CommentForm
 
 # Create your views here.
@@ -55,7 +53,7 @@ def get_blog_list_common_data(request,blogs_all_list):
         blog_dates_dict[blog_date] = blog_count
 
     content = {}
-    # content["blogs"] = page_of_blogs.object_list
+
     content['page_of_blogs'] = page_of_blogs
     content["blog_types"] = blog_types_list
     content["page_range"] = page_range
@@ -70,50 +68,6 @@ def blogs_with_type(request,blog_type_pk):
     #得到当前页面的博客
     content["blog_type"]=blog_type
     return render(request,"blog_with_type.html",content)
-
-def blog_login(request):
-    # username = request.POST.get('username','')
-    # user = authenticate(request, username=username, password=password)
-    # #在请求头中找到发送请求的网页url，登录成功后就返回当前页面，（反向解析出index的路径，首页）
-    # referer = request.META.get("HTTP_REFERER",reverse("index"))
-    # if user is not None:
-    #     return redirect(referer)
-    if request.method == 'POST':
-        login_form = loginForm(request.POST)
-        if login_form.is_valid():
-            # username = login_form.cleaned_data['username'],is_valid方法会执行到form的clean方法
-            user = login_form.cleaned_data["user"]
-            auth.login(request, user)
-                # Redirect to a success page.
-                # 解析出登录页面之前的页面的链接，并跳转到该页面，from为该页面传入的参数
-            return redirect(request.GET.get('from',reverse('index')))
-
-    else:
-        # get
-        login_form = loginForm()
-    content = {}
-    content["login_form"] = login_form
-    return render(request,'login.html',content)
-
-def blog_register(request):
-    if request.method == 'POST':
-        reg_form = RegForm(request.POST)
-        if reg_form.is_valid():
-            username = reg_form.cleaned_data["username"]
-            email = reg_form.cleaned_data["email"]
-            password = reg_form.cleaned_data["password"]
-            # 创建用户
-            user = User.objects.create_user(username,email,password)
-            user.save()
-            # 登录用户
-            user = auth.authenticate(username=username,password=password)
-            auth.login(request,user)
-            return redirect(request.GET.get('from',reverse('index')))
-    else:
-        reg_form = RegForm()
-    content = {}
-    content["reg_form"] = reg_form
-    return render(request,'register.html',content)
 
 
 def article_detail(request,article_id):
@@ -134,16 +88,14 @@ def article_detail(request,article_id):
 
     read_cookie_key = read_statistics_once_read(request,blog)
 
-    blog_content_type = ContentType.objects.get_for_model(blog)
-    comments = Comment.objects.filter(content_type=blog_content_type,object_id=blog.pk)
-
     content = {}
     content["article"] = blog
     content["previous_blog"] = Article.objects.filter(create_time__gt=blog.create_time).last()
     content["next_blog"] = Article.objects.filter(create_time__lt=blog.create_time).first()
-    content['comments'] = comments
-    #把数据初始化到Form表单中
-    content["comment_form"] = CommentForm(initial={"content_type":blog_content_type.model,"object_id":article_id})
+
+    # content["login_form"] = loginForm()
+    # 把数据初始化到Form表单中
+    # content["comment_form"] = CommentForm(initial={"content_type":blog_content_type.model,"object_id":article_id,"reply_comment_id":0})
     # content['user'] = request.user
     response = render(request,"article_detail.html",content)
     #通过设置cookie来确定计数，不同的人访问，同一个人不同时间访问

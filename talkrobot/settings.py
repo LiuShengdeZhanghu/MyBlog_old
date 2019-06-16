@@ -14,6 +14,8 @@ import os
 import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 可以把多个app放在这个目录下
+# sys.path.insert(0,os.path.join(BASE_DIR,'apps'))
 sys.path.insert(0,os.path.join(BASE_DIR,'extra_apps'))
 
 # Quick-start development settings - unsuitable for production
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'robot.apps.RobotConfig',
     'read_statistics',
     'comment',
+    'likes',
+    'user',
 ]
 SITE_ID = 1  #为了指定django.contrib.sites
 
@@ -71,6 +75,7 @@ TEMPLATES = [
         #在这里设置全局都可以访问的，这个DIRS路径指向根目录下的templates
         'DIRS': [
             os.path.join(BASE_DIR,'templates'),
+            os.path.join(BASE_DIR,'user/templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -79,6 +84,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 可以在公共模板中引用，这个login用于在页面中弹出登录框
+                'user.context_processors.login_model_form',
             ],
         },
     },
@@ -151,13 +158,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 #配置ckeditor的上传路径
 CKEDITOR_UPLOAD_PATH = 'upload/'
+# 配置评论的富文本编辑
 CKEDITOR_CONFIGS = {
+    'default':{},
     'comment_ckeditor':{
         'toolbar':'custom',
         'toolbar_custom':[
             ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
-            []
-        ]
+            ["TextColor","BGColor","RemoveFormat"],
+            ["NumberedList",'BulletedList'],
+            ['Link','Unlink'],
+            ["Smiley","SpecialChar","Blockquote"],
+        ],
+        'width':'auto',
+        'height':'160',
+        'tableSpaces':4,
+        # 去除底部的部分  4600249367272
+        'removePlugins':'elementspath',
+        'resize_enabled':False,
     }
 }
 
@@ -171,3 +189,14 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
+
+# 发送邮件配置
+# https://docs.djangoproject.com/en/2.1/topics/email/
+# https://docs.djangoproject.com/en/2.1/search/?q=email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '947172572@qq.com'
+EMAIL_HOST_PASSWORD = 'pocnwbatjyndbbhg' #授权码
+EMAIL_SUBJECT_PREFIX = '[刘胜的博客]'
+EMAIL_USE_TLS = True  # 与SMTP服务器通信时，是否启动TLS链接（安全链接）

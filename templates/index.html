@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% load staticfiles %}
 {% block title %}
     我的网站|首页
@@ -48,7 +48,7 @@
             <div class="col-md-6">
                 <h2 class="home_content">欢迎来到我的博客网站，随便看</h2>
                 <!-- 图表容器 DOM -->
-                <div id="container"></div>
+                <div id="container" class="container-fluid"></div>
             </div>
             <div class="col-md-3">
                 <div class="hot-blog center-block">
@@ -58,8 +58,8 @@
                             今天热门博客
                         </a>
                         {% for hot_data in today_hot_data %}
-                                <a href="/article/{{ hot_data.content_object.pk }}" class="list-group-item">
-                                <span class="badge">{{ hot_data.read_num }}</span> {{ hot_data.content_object|slice:"8:" }}
+                                <a href="/article/{{ hot_data.id }}" class="list-group-item">
+                                <span class="badge">{{ hot_data.read_num_sum }}</span> {{ hot_data.title }}
                                 </a>
                         {% empty %}
                             <a class="list-group-item">今天暂时没有热门博客</a>
@@ -71,7 +71,7 @@
                             近七天热门博客
                         </a>
                         {% for hot_data in hot_data_for_7_days %}
-            {#                <li><a href="/article/{{ hot_data.object_id }}">{{ hot_data.blog_title }}</a>：{{ hot_data.read_num_sum }}</li>#}
+            {#                <li><a href="/article/{{ hot_data.object_id }}">content_object|slice:"8:"{{ hot_data.blog_title }}</a>：{{ hot_data.read_num_sum }}</li>#}
 
                                 <a href="/article/{{ hot_data.id }}" class="list-group-item">
                                     <span class="badge">{{ hot_data.read_num_sum }}</span>{{ hot_data.title }}

@@ -1,0 +1,10 @@
+.btn-form-div{
+    display: block;
+}
+
+.send-email-btn{
+    margin-bottom: 1em;
+}
+.error-span{
+    display: contents;
+}

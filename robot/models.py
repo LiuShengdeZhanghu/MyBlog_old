@@ -18,13 +18,14 @@ class BlogType(models.Model):
         return self.type_name
 
 class Article(models.Model,ReadNumExpand):
+    # 继承的ReadNumExpand
     title = models.CharField(max_length=20,verbose_name="题目")
-    blog_type = models.ForeignKey(BlogType,on_delete=models.DO_NOTHING,default=1)
+    blog_type = models.ForeignKey(BlogType,on_delete=models.CASCADE,default=1)
     content = RichTextUploadingField()
     create_time = models.DateTimeField(auto_now_add=True,verbose_name="创建时间")
     #新添加一个字段的时i候会出现需要默认值的情况，这里为自动添加创建的时间
     last_updated_time = models.DateTimeField(auto_now=True,verbose_name="最后更新时间")
-    author = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=1,verbose_name="作者")
+    author = models.ForeignKey(User,on_delete=models.CASCADE,default=1,verbose_name="作者")
     # 这里的user是admin的超级管理员
     is_deleted = models.BooleanField(default=False,verbose_name="是否删除")
     read_details = GenericRelation(ReadDetail)

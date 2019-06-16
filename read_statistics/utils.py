@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from .models import ReadNum,ReadDetail
 from django.db.models import Sum
 from django.utils import timezone
+from robot.models import Article
 
 def read_statistics_once_read(request, obj):
     ct = ContentType.objects.get_for_model(obj)
@@ -47,9 +48,15 @@ def get_preSevenDays_readnum(content_type):
 
 def get_today_hot_data(content_type):
     today = timezone.now().date()
-    read_details = ReadDetail.objects.filter(content_type=content_type, date=today).order_by('-read_num')
+    # read_details = ReadDetail.objects.filter(content_type=content_type, date=today).order_by('-read_num')
     #排序,今天的阅读热度
-    return read_details[:3] #切片，取前3条
+
+    blogs = Article.objects.filter(read_details__date=today)\
+        .values('id','title')\
+        .annotate(read_num_sum = Sum('read_details__read_num'))\
+        .order_by('-read_num_sum')
+
+    return blogs[:3] #切片，取前3条
 
 def get_yesterday_hot_data(content_type):
     yesterday = timezone.now().date() - datetime.timedelta(days=1)    #今天减去一天就是昨天
